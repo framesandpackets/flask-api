@@ -4,24 +4,28 @@ from sqlalchemy import Column, Integer, String, Float
 import os
 from flask_marshmallow import Marshmallow
 
+#config of flask app & what dir to store database file
 app = Flask(__name__)
 basedir = os.path.abspath(os.path.dirname(__file__))
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, 'api.db')
 
-
+#SQLAlchemy & Marshmallow applications assigned to variables
 db = SQLAlchemy(app)
 ma = Marshmallow(app)
 
+#SQLAlchemy/Flask CLI command to create api.db
 @app.cli.command('db_create')
 def db_create():
     db.create_all()
     print('Database created!')
 
+#SQLAlchemy/Flask CLI command to delete contents in api.db DOES NOT REMOVE FILE
 @app.cli.command('db_drop')
 def db_drop():
     db.drop_all()
     print('Database dropped!')
 
+#SQLAlchemy/Flask CLI command to seed data to api.db
 @app.cli.command('db_seed')
 def db_seed():
     mercury = Planet(planet_name='Mercury',
@@ -49,6 +53,7 @@ def db_seed():
     db.session.add(venus)
     db.session.add(earth)
 
+#test user added to api.db
     test_user = User(first_name='test',
                      last_name='user',
                      email='test@test.com',
@@ -59,15 +64,7 @@ def db_seed():
     db.session.commit()
     print('Database seeded!')
 
-
-@app.route('/api/<string:name>/<int:age>')
-def api(name: str, age: int):
-    if age < 18:
-        return jsonify(message="Sorry " + name + ", you are not old enough."), 401
-    else:
-        return jsonify(message="Hello!, " + name + "! you are old enough. "), 200
-
-
+#404 test
 @app.route('/not_found')
 def not_found():
    return jsonify(message='Data requested not found :('), 404
