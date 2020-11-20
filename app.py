@@ -3,11 +3,15 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import Column, Integer, String, Float
 import os
 from flask_marshmallow import Marshmallow
+from flask_jwt_extended import JWTManager, jwt_required, create_access_token
+
 
 #config of flask app & what dir to store database file
 app = Flask(__name__)
 basedir = os.path.abspath(os.path.dirname(__file__))
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, 'api.db')
+app.config['JWT_SECRET_KEY'] = 'testsecret'  #change this is production
+
 
 #SQLAlchemy & Marshmallow applications assigned to variables
 db = SQLAlchemy(app)
