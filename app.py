@@ -75,6 +75,23 @@ def planets():
     result = planets_schema.dump(planets_list)
     return jsonify(result)
 
+#signup route where users pass 'email', 'first_name', 'last_name' and 'password' parameters to signup
+@app.route('/signup', methods =['POST'])
+def signup():
+    email = request.form['email']
+    test = User.query.filter_by(email=email).first()
+    if test:
+        return jsonify(message='Your email is already registered to the data base.'), 409
+    else:
+        first_name = request.form['first_name']
+        last_name = request.form['last_name']
+        password = request.form['password']
+        user = User(first_name=first_name, last_name=last_name, email=email, password=password)
+        db.session.add(user)
+        db.session.commit()
+        return jsonify(message="User created sucessfully."), 201
+
+
 # database models
 class User(db.Model):
     ___tablename___ = 'users'
